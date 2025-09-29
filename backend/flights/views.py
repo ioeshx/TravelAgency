@@ -127,3 +127,36 @@ class BookingViewSet(viewsets.ModelViewSet):
         bookings = Booking.objects.filter(**filters)
         serializer = self.get_serializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+    @action(detail=False, methods=['get'])
+    def get_empty_seats(self, request):
+        flight_number = request.query_params.get('flight_number')
+        departure_date = request.query_params.get('departure_date')
+
+        if not flight_number or not departure_date:
+            return Response({'error': 'Missing flight_number or departure_date.'}, status=status.HTTP_200_OK)
+
+        flights = Flight.objects.filter(flight_number=flight_number, departure_time__date=departure_date)
+        if not flights.exists():
+            return Response({'error': 'No matching flight found.'}, status=status.HTTP_200_OK)
+
+        flight = flights.first()
+        bookings = Booking.objects.filter(flight=flight)
+
+        # 假定经济舱座位号从1开始，头等舱紧接其后
+        total_seats = flight.economy_seats + flight.first_class_seats
+        # 计算已被预订的座位数量
+        booked_seats = sum([b.seat_count for b in bookings])
+        # 所有座位号 1 ~ (已预订+剩余)
+        all_seat_count = total_seats
+        # 假定已预订座位号为 1 ~ booked_seats，剩余座位号为 booked_seats+1 ~ all_seat_count
+        empty_seat_list = list(range(booked_seats + 1, all_seat_count + 1))
+
+        data = {
+            'flight_number': flight.flight_number,
+            'departure_date': departure_date,
+            'seats_left': total_seats,
+            'empty_seat_list': empty_seat_list
+        }
+        return Response(data, status=status.HTTP_200_OK)

@@ -139,7 +139,7 @@ API 的根路径为 `/api/`。
     ```
 
 #### 3. 查看所有订票记录（管理员权限）
-- URL: `/booking/all_bookings/`
+- URL: `/bookings/all_bookings/`
 - Method: `POST`
 - Body (JSON):
     ```json
@@ -155,7 +155,7 @@ API 的根路径为 `/api/`。
     ```
 
 #### 4. 根据多个属性值搜索订票记录（管理员权限）
-- URL: `/booking/search/`
+- URL: `/bookings/search/`
 - Method: `POST`
 - Body (JSON):
     ```json
@@ -171,4 +171,20 @@ API 的根路径为 `/api/`。
     此时应给出一个管理员账号和密码才能检索多个用户的订票信息
 - Curl 示例:
     ```bash
-    curl -X POST  -H "Content-Type: application/json" -d '{"username": "admin","password": "123456","user": 1,"flight": 2,"seat_class": "economy","seat_count": 2}' http://127.0.0.1:8000/booking/search/
+    curl -X POST  -H "Content-Type: application/json" -d '{"username": "admin","password": "123456","user": 1,"flight": 2,"seat_class": "economy","seat_count": 2}' http://127.0.0.1:8000/bookings/search/
+
+#### 5. 获取当前航班所有空座
+- URL: `/bookings/get_empty_seats/`
+- Method: `GET`
+- Body (JSON):
+    ```json
+    {
+        "empty_seats_count": 9,
+        "empty_seats_number": [1,3,5,16,17,20,49,50,52]
+    }
+    ```
+    
+- Curl 示例:
+    ```bash
+    curl "http://127.0.0.1:8000/api/bookings/get_empty_seats/?flight_number=CA123&departure_date=2025-10-01"
+    ```
