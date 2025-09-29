@@ -30,6 +30,7 @@ class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
+
     def create(self, request, *args, **kwargs):
         flight_id = request.data.get('flight')
         seat_class = request.data.get('seat_class')
@@ -70,6 +71,7 @@ class BookingViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(booking)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
     @action(detail=True, methods=['post'])
     def cancel(self, request, pk=None):
         try:
@@ -90,3 +92,38 @@ class BookingViewSet(viewsets.ModelViewSet):
         booking.delete()
 
         return Response({'message': 'Booking canceled successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+
+    @action(detail=False, methods=['post'])
+    def all_bookings(self, request):
+        if not self._check_admin(request):
+            return Response({'error': 'Admin authentication failed'}, status=status.HTTP_403_FORBIDDEN)
+
+        bookings = Booking.objects.all()
+        serializer = self.get_serializer(bookings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    @action(detail=False, methods=['post'])
+    def search(self, request):
+        if not self._check_admin(request):
+            return Response({'error': 'Admin authentication failed'}, status=status.HTTP_403_FORBIDDEN)
+
+        user_id = request.data.get('user')
+        flight_id = request.data.get('flight')
+        seat_class = request.data.get('seat_class')
+        seat_count = request.data.get('seat_count')
+
+        filters = {}
+        if user_id:
+            filters['user_id'] = user_id
+        if flight_id:
+            filters['flight_id'] = flight_id
+        if seat_class:
+            filters['seat_class'] = seat_class
+        if seat_count:
+            filters['seat_count'] = seat_count
+
+        bookings = Booking.objects.filter(**filters)
+        serializer = self.get_serializer(bookings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
