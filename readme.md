@@ -44,6 +44,68 @@ API 的根路径为 `/api/`。
 
 **注意**: 当前项目配置为允许任何用户访问所有接口（包括增删改），无需身份验证，方便开发和测试。
 
+### 用户管理
+#### 1. 用户注册
+-   URL: `/api/users/register/`
+-   Method: `POST`
+-   认证: 无需认证
+    ```json
+    {
+    "username": "john_doe",
+    "email": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "password": "secure_password123",
+    "password_confirm": "secure_password123"
+    }
+    ```
+-   Curl 示例:
+    ```bash
+    curl -X POST http://127.0.0.1:8000/api/users/register/ -H "Content-Type: application/json" -d '{"username": "john_doe", "email": "john@example.com", "first_name": "John", "last_name": "Doe", "password": "secure_password123", "password_confirm": "secure_password123"}'
+    ```
+
+#### 2. 用户登录
+-   URL: `/api/users/login/`
+-   Method: `POST`
+-   认证: 无需认证
+    ```json
+    {
+    "username": "john_doe",
+    "password": "secure_password123"
+    }
+    ```
+-   Curl 示例:
+    ```bash
+    curl -X POST http://127.0.0.1:8000/api/users/login/ -H "Content-Type: application/json" -d '{"username": "john_doe", "password": "secure_password123"}'
+    ```
+
+#### 3. 查看用户资料
+-   URL: `/api/users/profile/`
+-   Method: `GET`
+-   认证: 需要 Token
+-   Curl 示例:
+    ```bash
+    curl -X GET http://127.0.0.1:8000/api/users/profile/ -H "Authorization: Token your_token_here"
+    ```
+
+#### 4. 更新用户资料
+-   URL: `/api/users/update_profile/`
+-   Method: `PUT/PATCH`
+-   认证: 需要 Token
+-   Curl 示例:
+    ```bash
+    curl -X PUT http://127.0.0.1:8000/api/users/update_profile/ -H "Content-Type: application/json" -H "Authorization: Token your_token_here" -d '{"first_name": "Updated", "last_name": "Name", "email": "updated@example.com"}'
+    ```
+
+#### 5. 用户登出
+-   URL: `/api/users/logout/`
+-   Method: `POST`
+-   认证: 需要 Token
+-   Curl 示例:
+    ```bash
+    curl -X POST http://127.0.0.1:8000/api/users/logout/ -H "Authorization: Token your_token_here"
+    ```
+
 ### 航班管理
 
 #### 1. 新增航班
@@ -115,28 +177,31 @@ API 的根路径为 `/api/`。
 #### 1. 创建订座
 -   URL: `/api/bookings/`
 -   Method: `POST`
+-   认证：需要Token
 -   Body (JSON):
     ```json
     {
-        "user": 1,
         "flight": 1,
         "seat_class": "economy",
         "seat_count": 2
     }
     ```
-    **注意**: `user` 字段需要一个有效的用户 ID。您可以通过 Django Admin 创建用户后获得。
 -   Curl 示例:
     ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"user": 1, "flight": 1, "seat_class": "economy", "seat_count": 2}' http://127.0.0.1:8000/api/bookings/
+    curl -X POST http://127.0.0.1:8000/api/bookings/ -H "Content-Type: application/json" -H "Authorization: Token your_token_here" -d '{"flight": 1, "seat_class": "economy", "seat_count": 2}'
     ```
 
 #### 2. 取消订座
 -   URL: `/api/bookings/{id}/cancel/`
 -   Method: `POST`
--   Curl 示例 (取消 id 为 1 的订单):
+-   认证：需要Token
+-   限制：起飞前24H不能取消
+-   功能：自动恢复座位数量
+-   Curl 示例 :
     ```bash
-    curl -X POST http://127.0.0.1:8000/api/bookings/1/cancel/
+    curl -X POST http://127.0.0.1:8000/api/bookings/id/cancel/ -H "Authorization: Token your_token_here"
     ```
+    注：id由预定成功后返回，也可通过查询个人订单得到
 
 #### 3. 查看所有订票记录（管理员权限）
 - URL: `/bookings/all_bookings/`
@@ -187,4 +252,13 @@ API 的根路径为 `/api/`。
 - Curl 示例:
     ```bash
     curl "http://127.0.0.1:8000/api/bookings/get_empty_seats/?flight_number=CA123&departure_date=2025-10-01"
+    ```
+
+#### 6. 查看个人预订
+-   URL: `/api/bookings/`
+-   Method: `GET`
+-   认证：需要Token
+-   Curl 示例:
+    ```bash
+    curl -X GET http://127.0.0.1:8000/api/bookings/ -H "Authorization: Token YOUR_TOKEN"
     ```
