@@ -138,3 +138,37 @@ API 的根路径为 `/api/`。
     curl -X POST http://127.0.0.1:8000/api/bookings/1/cancel/
     ```
 
+#### 3. 查看所有订票记录（管理员权限）
+- URL: `/booking/all_bookings/`
+- Method: `POST`
+- Body (JSON):
+    ```json
+    {
+        "username": "admin",
+        "password": "123456"
+    }
+    ```
+    此时应给出一个管理员账号和密码才能读取全部用户的信息
+- Curl 示例:
+    ```bash
+    curl -X POST  -H "Content-Type: application/json" -d '{"username": "admin","password": "123456"}' http://127.0.0.1:8000/booking/all_bookings/
+    ```
+
+#### 4. 根据多个属性值搜索订票记录（管理员权限）
+- URL: `/booking/search/`
+- Method: `POST`
+- Body (JSON):
+    ```json
+    {
+        "username": "admin",
+        "password": "123456",
+        "user": 1,
+        "flight": 2,
+        "seat_class": "economy",
+        "seat_count": 2
+    }
+    ```
+    此时应给出一个管理员账号和密码才能检索多个用户的订票信息
+- Curl 示例:
+    ```bash
+    curl -X POST  -H "Content-Type: application/json" -d '{"username": "admin","password": "123456","user": 1,"flight": 2,"seat_class": "economy","seat_count": 2}' http://127.0.0.1:8000/booking/search/
