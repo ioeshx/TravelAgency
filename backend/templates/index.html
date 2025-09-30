@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}首页 - 机票服务系统{% endblock %}
+
+{% block content %}
+<!-- 英雄区域 -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">欢迎使用机票服务系统</h1>
+                <p class="lead mb-4">专业的机票预订服务平台，为您提供便捷的航班查询和订座服务</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'flight_search' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-search"></i> 查询航班
+                    </a>
+                    <a href="{% url 'flight_list' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-list"></i> 浏览航班
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-plane-departure" style="font-size: 8rem; opacity: 0.8;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 功能特色 -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-5 fw-bold">系统功能</h2>
+                <p class="lead text-muted">为您提供全方位的机票服务</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-search feature-icon"></i>
+                        <h5 class="card-title">智能搜索</h5>
+                        <p class="card-text">支持多条件组合搜索，快速找到合适的航班</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-ticket-alt feature-icon"></i>
+                        <h5 class="card-title">在线订座</h5>
+                        <p class="card-text">支持经济舱、商务舱、头等舱在线订座</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user-shield feature-icon"></i>
+                        <h5 class="card-title">安全可靠</h5>
+                        <p class="card-text">用户信息加密存储，订座记录安全管理</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 快速搜索 -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">
+                            <i class="fas fa-search"></i> 快速搜索航班
+                        </h4>
+                        <form method="GET" action="{% url 'flight_search' %}">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="departure_city" class="form-label">出发地</label>
+                                    <input type="text" class="form-control" id="departure_city" name="departure_city" placeholder="请输入出发城市">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="arrival_city" class="form-label">目的地</label>
+                                    <input type="text" class="form-control" id="arrival_city" name="arrival_city" placeholder="请输入到达城市">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="departure_date" class="form-label">出发日期</label>
+                                    <input type="date" class="form-control" id="departure_date" name="departure_date">
+                                </div>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-search"></i> 搜索航班
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 统计信息 -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="fas fa-plane text-primary" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2">50+</h3>
+                        <p class="text-muted">可用航班</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="fas fa-users text-success" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2">1000+</h3>
+                        <p class="text-muted">注册用户</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="fas fa-ticket-alt text-warning" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2">5000+</h3>
+                        <p class="text-muted">成功订座</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="fas fa-star text-danger" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2">4.8</h3>
+                        <p class="text-muted">用户评分</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

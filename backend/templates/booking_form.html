@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}订座 - {{ flight.flight_number }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-ticket-alt"></i> 订座信息
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- 航班信息 -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="text-muted">航班信息</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-plane-departure text-primary me-3"></i>
+                                        <div>
+                                            <div class="fw-bold">{{ flight.departure_city }}</div>
+                                            <div class="text-muted">{{ flight.departure_time|date:"m-d H:i" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-plane-arrival text-success me-3"></i>
+                                        <div>
+                                            <div class="fw-bold">{{ flight.arrival_city }}</div>
+                                            <div class="text-muted">{{ flight.arrival_time|date:"m-d H:i" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-info">{{ flight.airline }} - {{ flight.aircraft_type }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 订座表单 -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="seat_class" class="form-label">舱位等级</label>
+                                    <select class="form-select" id="seat_class" name="seat_class" required>
+                                        <option value="">请选择舱位</option>
+                                        <option value="economy">经济舱 - ¥{{ flight.economy_price }}</option>
+                                        <option value="business">商务舱 - ¥{{ flight.business_price }}</option>
+                                        <option value="first">头等舱 - ¥{{ flight.first_price }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="seat_count" class="form-label">订座数量</label>
+                                    <input type="number" class="form-control" id="seat_count" name="seat_count" 
+                                           min="1" max="9" value="1" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="passenger_name" class="form-label">乘客姓名</label>
+                                    <input type="text" class="form-control" id="passenger_name" name="passenger_name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="passenger_id" class="form-label">身份证号</label>
+                                    <input type="text" class="form-control" id="passenger_id" name="passenger_id" 
+                                           pattern="[0-9]{18}" title="请输入18位身份证号" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">联系电话</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   pattern="[0-9]{11}" title="请输入11位手机号" required>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'flight_detail' flight.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> 返回详情
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-ticket-alt"></i> 确认订座
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('seat_class').addEventListener('change', function() {
+    const seatClass = this.value;
+    const seatCount = document.getElementById('seat_count').value;
+    let price = 0;
+    
+    switch(seatClass) {
+        case 'economy':
+            price = {{ flight.economy_price }};
+            break;
+        case 'business':
+            price = {{ flight.business_price }};
+            break;
+        case 'first':
+            price = {{ flight.first_price }};
+            break;
+    }
+    
+    const totalPrice = price * seatCount;
+    if (totalPrice > 0) {
+        // 可以在这里显示总价格
+        console.log('总价格:', totalPrice);
+    }
+});
+
+document.getElementById('seat_count').addEventListener('change', function() {
+    const seatClass = document.getElementById('seat_class').value;
+    const seatCount = this.value;
+    
+    if (seatClass) {
+        let price = 0;
+        switch(seatClass) {
+            case 'economy':
+                price = {{ flight.economy_price }};
+                break;
+            case 'business':
+                price = {{ flight.business_price }};
+                break;
+            case 'first':
+                price = {{ flight.first_price }};
+                break;
+        }
+        
+        const totalPrice = price * seatCount;
+        console.log('总价格:', totalPrice);
+    }
+});
+</script>
+{% endblock %}
