@@ -2,7 +2,7 @@
 
 ## 小组分工
 
-任务一：施鸿翔
+任务一：施鸿翔、杨佳豪
 
 任务三：刘意如
 
@@ -10,27 +10,28 @@
 
 [文件 - flight-ticket - Repo](https://devcloud.cn-north-4.huaweicloud.com/codehub/project/2db97c6ad2dd4c61a4a792f57dd195d0/codehub/3013491/home?ref=master)
 
+## 前端界面展示
+
+![1759212886619](image/lab1-report/1759212886619.png)
+
+![1759212900220](image/lab1-report/1759212900220.png)
+
+![1759212911727](image/lab1-report/1759212911727.png)
+
 ## Docker相关截图和接口测试截图
 
 镜像构建成功截图：
 ![alt text](image.png)
 
-
-
 成功运行截图：
 ![alt text](image-1.png)
-
 
 [apifox项目地址](https://s.apifox.cn/a347396b-373b-4c2f-a202-60ba0021e516)
 api调用成功：
 ![alt text](image-3.png)
 
-
-
 docker-compose 快速启动
 ![alt text](image-2.png)
-
-
 
 ## 实验记录
 

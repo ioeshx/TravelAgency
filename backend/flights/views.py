@@ -1,5 +1,15 @@
-from rest_framework import viewsets, status
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.decorators import action
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
@@ -26,9 +36,9 @@ class FlightViewSet(viewsets.ModelViewSet):
         departure_date = request.query_params.get('departure_date')
 
         if departure_city:
-            queryset = queryset.filter(departure_city__icontains=departure_city)
+            flights = flights.filter(departure_city__icontains=departure_city)
         if destination_city:
-            queryset = queryset.filter(destination_city__icontains=destination_city)
+            flights = flights.filter(arrival_city__icontains=destination_city)
         if departure_date:
             queryset = queryset.filter(departure_time__date=departure_date)
 
@@ -85,15 +95,11 @@ class BookingViewSet(viewsets.ModelViewSet):
             )
         
         if seat_class == 'economy':
-            if flight.economy_seats >= seat_count:
-                flight.economy_seats -= seat_count
-            else:
-                return Response({'error': 'Not enough economy seats available.'}, status=status.HTTP_400_BAD_REQUEST)
-        elif seat_class == 'first_class':
-            if flight.first_class_seats >= seat_count:
-                flight.first_class_seats -= seat_count
-            else:
-                return Response({'error': 'Not enough first class seats available.'}, status=status.HTTP_400_BAD_REQUEST)
+            available_seats = flight.economy_seats
+        elif seat_class == 'business':
+            available_seats = flight.business_seats
+        elif seat_class == 'first':
+            available_seats = flight.first_seats
         else:
             return Response({'error': 'Invalid seat class.'}, status=status.HTTP_400_BAD_REQUEST)
 
